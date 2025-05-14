@@ -1,0 +1,61 @@
+.f-editable-table
+  width: 100%
+  border-spacing: 0
+  position: relative
+  thead tr
+    background-color: #F5F5F5
+    height: 36px
+
+    th
+      font-size: 0.9em
+      color: rgb(0,0,0,0.54)
+      background-color: #F5F5F5
+      text-align: center
+      border-top: 1px solid rgba(0,0,0,0.2)
+      border-bottom: 1px solid rgba(0,0,0,0.2)
+      z-index: 1
+      position: relative
+
+  thead tr th, tbody tr td
+      border-left: 1px solid rgba(0,0,0,0.2)
+
+  tbody tr
+      height: 36px
+      &.dummy-row
+        height: 36px
+
+        td
+          border-bottom: none
+
+      &:hover td
+        background-color: rgba(0,0,0,0.2)
+
+
+      td
+        border-bottom: 1px solid rgba(0,0,0,0.2)
+
+      td.total-
+        &quantity, &box, &stem, &price, &amount
+          text-align: right
+          padding: 0 4px 0 0
+
+      td.summary
+        background-color: #F5F5F5
+
+.cursor
+  position: absolute
+  border: 2px solid #8bc34a
+  top: 0
+  left: 0
+  pointer-events: none
+.cell-input
+  position: absolute
+  top: 0
+  left: 0
+  opacity: 0
+  pointer-events: none
+  background-color: #ffffff
+  will-change: opacity, top, left, width
+  &.editing
+    opacity: 1
+    pointer-events: inherit
