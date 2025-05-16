@@ -31,3 +31,12 @@ export interface Customer extends Master {
   address: string | null
   description: string | null
 }
+
+export interface OrderDetail {
+  productId: number | null
+  price: number | null
+  quantity: number | null
+  amount: number | null
+
+
+}

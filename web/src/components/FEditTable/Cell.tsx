@@ -5,7 +5,7 @@ import {TableContext} from "./index.tsx";
   export default function ({column, row, rowIndex, columnIndex}:any) {
     const cell = row[column.name] || ''
     const injector =useContext(TableContext);
-    const {cursor, setCursor} = injector
+    const {cursor, setCursor, onFocus} = injector
     const cellRef = useRef(null);
     const onClick=()=> {
       if (cellRef.current) {
@@ -25,11 +25,19 @@ import {TableContext} from "./index.tsx";
         })
       }
     }
+    const onDoubleClick=()=>{
+      setCursor({
+        ...cursor,
+        editing:true
+      })
+      onFocus()
+    }
     return (
     <TableCell
       ref={cellRef}
       className={`cell-${rowIndex}-${columnIndex}`}
       onClick={onClick}
+      onDoubleClick={onDoubleClick}
 
     >{cell} </TableCell>
   )

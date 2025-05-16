@@ -5,12 +5,12 @@ import dayjs from 'dayjs';
 import {DesktopDatePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Box from "@mui/material/Box";
-import {Customer, getMethod, postMethod} from "../../utils";
+import {Customer, getMethod, postMethod, Product, OrderDetail} from "../../utils";
 
 
 interface OrderDetailProps {
   products : any[]
-  detail: any
+  detail: OrderDetail
   index: number
   onChange: (index: number, updataDetail : any) => void
 }
@@ -48,10 +48,12 @@ const OrderDetailComponent = ( {products, detail, index, onChange }: OrderDetail
       <Grid size={{ xs: 12, md: 3 }}>
         <TextField
           fullWidth
+          value={detail.quantity}
           label="Quantity"
           variant="outlined"
           onChange={e => onChange(index,{...detail, quantity: e.target.value})}
-
+          error={true}
+          helperText="Quantity has been number"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 3 }}>
@@ -72,11 +74,11 @@ export default function() {
   const emptyDetail = { id: null, products: null, price: '', quantity: '', amount: '' }
 
   // get customerdata by api
-  const [customers, setCustomers] = useState([])
+  const [customers, setCustomers] = useState<Customer[]>([])
   const onMounted = async () => {
-    const customersData = await getMethod('/customers')
-    const productsData = await getMethod('/products')
-    console.log(productsData)
+    const [customersData, productsData] = await Promise.all([
+      getMethod('/customers'), getMethod('/products')
+    ])
     setCustomers([...customersData])
     setProducts([...productsData])
   }
@@ -84,7 +86,7 @@ export default function() {
     onMounted()
   }, [])
   //get product by api
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState<Product[]>([])
 
   const [order, setOrder] = useState({
     id: null,
@@ -95,7 +97,8 @@ export default function() {
     saleDate: '2025-05-10',
     details: [
       { ...emptyDetail }
-    ]
+    ],
+    isValid: true,
   })
 
 
@@ -120,7 +123,7 @@ export default function() {
       employeeId: 1,
       comment: "New order created",
       details:
-        order.details.map(detail => ({
+        order.details.map((e) => ({
         productId: 10,
         price: 1000,
         quantity: 10
@@ -144,7 +147,7 @@ export default function() {
                 disablePortal
                 options={customers}
                 getOptionLabel={(option: any) => option.name}
-                getOptionKey={(option) => option.id}
+                getOptionKey={(option: Customer) => option.id}
                 renderInput={
                   (params) => <TextField {...params} label="Customer Name" value={order.customer?.name} />
                 }
@@ -180,6 +183,7 @@ export default function() {
           order.details.map((detail, index) => {
             return (
               <OrderDetailComponent
+                detail={detail}
               key={index}
               products={products}
               index={index}

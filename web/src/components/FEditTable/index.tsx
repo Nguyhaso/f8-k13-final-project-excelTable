@@ -1,4 +1,3 @@
-import Paper from "@mui/material/Paper";
 import {Table, TableBody, TableCell, TableHead, TableRow} from "@mui/material";
 import Row from "./Row.tsx";
 import './style.sass'
@@ -15,24 +14,27 @@ const defaultCursor ={
   height:0,
   editing:false
 }
+const onFocus = ()=>{
+  const input = document.querySelector('.cell-input input');
+  input?.focus()
+}
 
 export const TableContext = createContext(null);
-function FTableComponent({columns = [], rows = []}: any) {
+function FTableComponent({columns = [], rows = [], onInput}: any) {
 
   const [cursor, setCursor] = useState({...defaultCursor});
   const provider ={
-    cursor, setCursor, rows, columns
+    cursor, setCursor, rows, columns, onFocus, onInput
   }
 useEffect(()=>{
   console.log(cursor)
 },[cursor])
-  const onKeyDown=(e:any)=>{
+  const onKeyDown=()=>{
     setCursor({
       ...cursor,
       editing:true
     })
-    const input = document.querySelector('.cell-input input');
-    input.focus()
+    onFocus()
   }
   return (
     <TableContext.Provider value={provider}>
